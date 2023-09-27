@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+  <style>
+
+    #container {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin: 60px auto;
+    }
+    @media only screen and (max-width: 600px) {
+      #container {
+          margin: 20px auto;
+        }
+    }
+    h1 {
+      text-align: center;
+
+    }
+
+    .div {
+      display: flex;
+      width: 100px;
+      height: 100px;
+      border: 1px solid darkgrey;
+      cursor: pointer;
+      margin: 5px;
+      justify-content: center;
+      align-items: center;
+    }
+    .zero-div {
+      background-color: aquamarine;
+    }
+    .non-zero-div {
+      background-color: lightgrey;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Click me!</h1>
+  <div id="container">
+  </div>
+
+  <script>
+    let baseList = []
+
+   for(let i = 1; i <=100; i+=1) {
+    baseList.push({ position: i, name: `div ${i}`})
+  }
+  const container = document.querySelector("#container");
+
+  const createDivList = () => {
+    baseList.sort((a, b) =>a.position - b.position)
+   container.innerHTML =  baseList.reduce((acc, element) =>  acc += `<div class="${element.position ? "non-zero-div div" : "zero-div div"}" data-position="${element.position}">${element.name}</div>` 
+    , ``)
+  }
+
+  container.addEventListener('click', e => {
+    const position = e.target.dataset.position;
+    const textContent = e.target.textContent
+    const originalPosition = e.target.textContent.split(' ')[1];
+
+    baseList = baseList.map(element => {
+      if(element.position == 0){
+         return {position :element.name.split(' ')[1], name: element.name}
+      }
+      if(element.position == position){
+        return {position: 0, name: element.name}
+      }
+      return element
+     })
+
+     createDivList()
+  })
+
+
+   createDivList();
+</script>
+</body>
+</html>
