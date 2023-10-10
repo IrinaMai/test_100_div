@@ -23,7 +23,7 @@
 
     }
 
-    .div {
+    .box {
       display: flex;
       width: 100px;
       height: 100px;
@@ -32,13 +32,13 @@
       margin: 5px;
       justify-content: center;
       align-items: center;
-    }
-    .zero-div {
-      background-color: aquamarine;
-    }
-    .non-zero-div {
       background-color: lightgrey;
     }
+    .zero {
+      background-color: aquamarine;
+    }
+
+
 
   </style>
 </head>
@@ -48,39 +48,46 @@
   </div>
 
   <script>
-    let baseList = []
+ const container = document.getElementById("container");
 
-   for(let i = 1; i <=100; i+=1) {
-    baseList.push({ position: i, name: `div ${i}`})
-  }
-  const container = document.querySelector("#container");
+let boxList = [];
+for(let i = 1; i<=100; i+=1){
+  boxList.push({name: `Div ${i}`, position: i})
+ 
+}
+ const createBoxList = (array) => {
+  const boxListHTML =  array.sort((a,b) =>  a.position - b.position)
+  .reduce((acc, element) => {
+    return acc += `<div class="${element.position <=0 ? "zero box" : "box"}" data-position = ${element.position}>${element.name}</div>`
+  }, "")
 
-  const createDivList = () => {
-    baseList.sort((a, b) =>a.position - b.position)
-   container.innerHTML =  baseList.reduce((acc, element) =>  acc += `<div class="${element.position ? "non-zero-div div" : "zero-div div"}" data-position="${element.position}">${element.name}</div>` 
-    , ``)
-  }
+  return boxListHTML;
+ }
 
-  container.addEventListener('click', e => {
-    const position = e.target.dataset.position;
-    const textContent = e.target.textContent
-    const originalPosition = e.target.textContent.split(' ')[1];
+ container.addEventListener("click", event => {
+  const currentPosition = event.target.dataset.position;
+  const prevPosition = +event.target.textContent.split(" ")[1]
+  const min = Math.min(...boxList.map(e => e.position))
 
-    baseList = baseList.map(element => {
-      if(element.position == 0){
-         return {position :element.name.split(' ')[1], name: element.name}
-      }
-      if(element.position == position){
-        return {position: 0, name: element.name}
-      }
-      return element
-     })
+  boxList = boxList.map(e => {
+    
+    if(e.position === prevPosition){
+      return {name: e.name, position:min-1}
+    } else if(currentPosition <=0 && e.name === event.target.textContent){
+      return {name: e.name, position: prevPosition}
+    }
+    return e
 
-     createDivList()
   })
 
+  container.innerHTML = createBoxList(boxList);
 
-   createDivList();
+ });
+
+
+
+ container.innerHTML = createBoxList(boxList)
+
 </script>
 </body>
 </html>
